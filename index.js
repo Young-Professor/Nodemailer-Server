@@ -99,17 +99,17 @@ app.post("/api/verify", async (req, res) => {
   const name = req.body.name;
   const token = req.body.verification;
 
-  // Check if the provided email exists
-  emailExistence.check(email, async (err, exists) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ error: 'Error occurred while checking email existence.' });
-    }
+  // // Check if the provided email exists
+  // emailExistence.check(email, async (err, exists) => {
+  //   if (err) {
+  //     console.error(err);
+  //     return res.status(500).json({ error: 'Error occurred while checking email existence.' });
+  //   }
 
-    if (!exists) {
-      // If the email does not exist, notify the user and return an error response
-      return res.status(400).json({ error: 'The provided email does not exist.' });
-    }
+  //   if (!exists) {
+  //     // If the email does not exist, notify the user and return an error response
+  //     return res.status(400).json({ error: 'The provided email does not exist.' });
+  //   }
 
     // The email exists, proceed with sending the verification email
 
@@ -143,7 +143,7 @@ app.post("/api/verify", async (req, res) => {
       console.error(error);
       return res.status(500).json({ error: error });
     }
-  });
+  // });
 });
 
 
