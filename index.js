@@ -99,19 +99,6 @@ app.post("/api/verify", async (req, res) => {
   const name = req.body.name;
   const token = req.body.verification;
 
-  // // Check if the provided email exists
-  // emailExistence.check(email, async (err, exists) => {
-  //   if (err) {
-  //     console.error(err);
-  //     return res.status(500).json({ error: 'Error occurred while checking email existence.' });
-  //   }
-
-  //   if (!exists) {
-  //     // If the email does not exist, notify the user and return an error response
-  //     return res.status(400).json({ error: 'The provided email does not exist.' });
-  //   }
-
-    // The email exists, proceed with sending the verification email
 
     // Create the verification link with the token
     const verificationLink = `https://campus-closet.vercel.app/auth/account/verify/${token}`;
@@ -143,7 +130,50 @@ app.post("/api/verify", async (req, res) => {
       console.error(error);
       return res.status(500).json({ error: error });
     }
-  // });
+});
+app.post("/api/sendresetPassword", async (req, res) => {
+  const email = req.body.email;
+  const name = req.body.name;
+  const token = req.body.resetToken;
+
+
+    // Create the verification link with the token
+    const ResetLink = `https://campus-closet.vercel.app/auth/account/reset_password/${token}`;
+    try {
+      // create nodemailer transporter object
+      let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: process.env.EMAIL,
+          pass: process.env.PASS,
+        },
+      });
+
+      // send email using nodemailer
+      const emailRes = await transporter.sendMail({
+        from: process.env.EMAIL,
+        to: email,
+        subject: 'Password Reset Request',
+        html: `
+          <p>Dear ${name},</p>
+          <p>We have received a request to reset the password for your account on our website. If you did not initiate this request, please ignore this email.</p>
+          <p>To proceed with the password reset, please click on the link below.</p>
+          <a href="${ResetLink}">${ResetLink}</a>
+          <p>If the link does not work, you can copy and paste it into your web browser's address bar.</p>
+          <p>This link is valid for the next 24 hours. After that, you will need to initiate a new password reset request.</p>
+          <p>If you have any questions or need assistance, please don't hesitate to contact our support team.</p>
+          <p>Thank you for using our website!</p>
+          <p>Best regards,</p>
+          <p>Campus Closet</p>
+          
+        `,
+      });
+      console.log('Reset request email sent');
+      return res.status(200).json({ message: "Reset Link sent successfully" });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: error });
+    }
 });
 
 
