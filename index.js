@@ -182,7 +182,7 @@ app.post("/api/notifyOwner",async (req,res)=>{
     const buyerDetails= req.body.buyerDetails;
     const email=buyerDetails[0][0].email;
     const name=buyerDetails[0][0].full_name;
-    const PageLink = `https://campus-closet.vercel.app/`;
+    const PageLink = `https://centri-closet.vercel.app/`;
         try {
       // create nodemailer transporter object
       let transporter = nodemailer.createTransport({
