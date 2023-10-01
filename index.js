@@ -101,7 +101,7 @@ app.post("/api/verify", async (req, res) => {
 
 
     // Create the verification link with the token
-    const verificationLink = `https://campus-closet.vercel.app/auth/account/verify/${token}`;
+    const verificationLink = `https://centri-closet.vercel.app/auth/account/verify/${token}`;
     try {
       // create nodemailer transporter object
       let transporter = nodemailer.createTransport({
