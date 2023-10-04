@@ -10,7 +10,7 @@ app.use(cors());
 app.use(bodyParser.json());
 const port = process.env.PORT || 8080;
 app.get('/', (req, res) => {
-    res.send('Express JS on Vercel');
+    res.send('Mailing from Us mexico');
 });
 
 let Name = '';
@@ -216,6 +216,8 @@ app.post("/api/notifyOwner",async (req,res)=>{
     })
 
 
+    
+
 
 
 app.listen(port, (err, res) => {
@@ -226,3 +228,4 @@ app.listen(port, (err, res) => {
         console.log('[INFO] Server Running on port:', port);
     }
 });
+
