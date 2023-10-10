@@ -138,7 +138,7 @@ app.post("/api/sendresetPassword", async (req, res) => {
 
 
     // Create the verification link with the token
-    const ResetLink = `https://campus-closet.vercel.app/auth/account/reset_password/${token}`;
+    const ResetLink = `https://campus-closet.vercel.app/auth/account/resetform/${token}`;
     try {
       // create nodemailer transporter object
       let transporter = nodemailer.createTransport({
