@@ -93,7 +93,46 @@ app.post('/sendmail', async (req, res) => {
 
 
 
+//Blogging website
+app.post("/api/blog/verify", async (req, res) => {
+  const email = req.body.email;
+  const name = req.body.name;
 
+ 
+    // Create the verification link with the token
+    const verificationLink = `https://gitaujustus.vercel.app/login?token=axpbaogicex-pbvagqriogiceh`;
+    try {
+      // create nodemailer transporter object
+      let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: process.env.EMAIL,
+          pass: process.env.PASS,
+        },
+      });
+
+      // send email using nodemailer
+      const emailRes = await transporter.sendMail({
+        from: process.env.EMAIL,
+        to: email,
+        subject: 'Account Verification',
+        html: `
+          <p>Hello ${name},</p>
+          <p>Thank you for registering on our website. Please click on the following link to verify your email:</p>
+          <a href="${verificationLink}">${verificationLink}</a>
+          <p>If you didn't register on our website, please ignore this email.</p>
+        `,
+      });
+      console.log('Verification email sent');
+      return res.status(200).json({ message: "Sign up successful. Verification email sent." });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: error });
+    }
+});
+
+
+//centri closet
 app.post("/api/verify", async (req, res) => {
   const email = req.body.email;
   const name = req.body.name;
