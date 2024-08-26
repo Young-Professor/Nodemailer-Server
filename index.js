@@ -170,6 +170,8 @@ app.post("/api/verify", async (req, res) => {
       return res.status(500).json({ error: error });
     }
 });
+
+
 app.post("/api/sendresetPassword", async (req, res) => {
   const email = req.body.email;
   const name = req.body.name;
@@ -253,6 +255,69 @@ app.post("/api/notifyOwner",async (req,res)=>{
         return res.status(500).json({ error: error });      
     }
     })
+
+
+    // Poulet
+    // Send notifications to parents
+    app.post("/api/feedback-to-parents", async (req, res) => {
+      const { first_name, email, adoption_type } = req.body; // Destructuring the body directly
+      console.log(first_name, email, adoption_type);
+        console.log(email);
+        
+        if (!email) {
+          return res.status(400).json({ error: "Email is required" });
+        }
+    
+      try {
+        // create nodemailer transporter object
+        let transporter = nodemailer.createTransport({
+          service: 'gmail',
+          auth: {
+            user: process.env.EMAIL,
+            pass: process.env.PASS,
+          },
+        });
+    
+        // Construct the email message based on the adoption type
+        let message = `
+          <p>Dear ${first_name},</p>
+          <p>We wanted to inform you that your child has been successfully adopted. We appreciate your trust in us during this process.</p>
+        `;
+    
+        if (adoption_type === "open") {
+          message += `
+            <p>As the adoption is of an open type, you have the option to keep in touch with your child. We encourage you to coordinate with the adoptive family to establish a connection that works best for everyone involved.</p>
+          `;
+        } else if (adoption_type === "closed") {
+          message += `
+            <p>As the adoption is of a closed type, please note that there will be no ongoing contact with your child. We understand that this may be a difficult time, and we want to assure you that your child will be well cared for in their new home.</p>
+          `;
+        }
+    
+        message += `
+          <p>Thank you for your selflessness and courage in giving your child the opportunity for a bright future.</p>
+          <p>Best regards,</p>
+          <p>The Adoption Agency Team</p>
+        `;
+    
+        // send email using nodemailer
+        await transporter.sendMail({
+          from: process.env.EMAIL,
+          to: email,
+          subject: 'Update on Your Child’s Adoption',
+          html: message,
+        });
+    
+        console.log('Notification email sent');
+        return res.status(200).json({ message: "Notification was sent successfully." });
+      } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: error });
+      }
+    });
+    
+
+
 
 
     
