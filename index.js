@@ -378,6 +378,94 @@ app.post("/api/notifyOwner",async (req,res)=>{
 
 
 
+
+
+
+
+// Send notifications to parents about child verification status
+app.post("/api/notify-verification-status", async (req, res) => {
+  const { parent_first_name, parent_email, status } = req.body;
+
+
+  if (!parent_email || !status) {
+    return res.status(400).json({ error: "Parent email and status are required" });
+  }
+
+  try {
+    // Create nodemailer transporter object
+    let transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.PASS,
+      },
+    });
+
+    // Construct the email message based on the verification status
+    let subject, message;
+
+    if (status === "available") {
+      subject = "Child Verification Successful - Awaiting Adoption";
+      message = `
+        <p>Dear ${parent_first_name},</p>
+        <p>We are pleased to inform you that your child has been successfully verified in our system. They are now awaiting adoption.</p>
+        <p>This means that your child's profile is now visible to potential adoptive families. We will keep you updated on any developments in the adoption process.</p>
+        <p>If you have any questions or need more information, please don't hesitate to contact us.</p>
+        <p>Thank you for your patience and trust in our process.</p>
+        <p>Best regards,</p>
+        <p>The Adoption Agency Team</p>
+      `;
+    } else if (status === "rejected") {
+      subject = "Important Information About Your Child's Verification";
+      message = `
+        <p>Dear ${parent_first_name},</p>
+        <p>We regret to inform you that your child's verification in our system has been unsuccessful.</p>
+        <p>We understand this may be disappointing news. For more detailed information about this decision and to discuss your options moving forward, please contact our administrative team.</p>
+        <p>We are here to support you and answer any questions you may have during this process.</p>
+        <p>Best regards,</p>
+        <p>The Adoption Agency Team</p>
+      `;
+    } else {
+      console.log("Invalid status provided");
+      return res.status(400).json({ error: "Invalid status provided" });
+    }
+
+    // Send email using nodemailer
+    await transporter.sendMail({
+      from: process.env.EMAIL,
+      to: parent_email,
+      subject: subject,
+      html: message,
+    });
+
+    console.log('Notification email sent');
+    return res.status(200).json({ message: "Notification was sent successfully." });
+  } catch (error) {
+    console.error("ghhhhhhhhhhhhhhh", error);
+    return res.status(500).json({ error: "An error occurred while sending the notification" });
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // send notification to guardian users
 app.post("/api/guardians/notify", async (req, res) => {
   const { name, email } = req.body;
